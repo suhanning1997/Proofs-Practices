@@ -1,0 +1,94 @@
+\documentclass[]{article}
+
+\usepackage[margin=0.75in, paperwidth=8.27in, paperheight=11.69in]{geometry}
+
+\usepackage{parskip}
+
+\usepackage{amsfonts}
+
+\usepackage{amssymb}
+
+\usepackage{amsmath}
+
+\usepackage{amsthm}
+
+\usepackage{bm}
+
+\usepackage{commath}
+
+\begin{document}
+
+\title{\textbf {Proving Lyapunov CLT using ChF}}
+\author{
+		Hanning Su \\
+        Student ID: 855767\\
+}
+\maketitle
+
+Last week, we mentioned that an important idea behind simulation is CLT. I am thinking why not try to prove for  a sequence of independent but not identically distributed random variables? This a good review on probability theory anyway.
+
+\section*{Lyapunov condition}
+
+Assuming $\mathbb{E} X_j = 0$, one has $$B^{-3}_n \sum_{n=1}^{\infty} \mathbb{E} \abs{X_j}^3 \xrightarrow[]{} 0 \ \text{as}\  n \xrightarrow[]{} \infty$$ where $B_n^2 := \mathbb{V}(S_n) = \sum_{j = 1}^{n} \mathbb{E} X_j^2$
+
+Note that here we assume $X_j$'s all have zero mean, in the proof below we need to standardize accordingly.
+
+\section*{Lyapunov CLT statement}
+
+For a series of independent but not necessarily identically distributed random variables $X_1, X_2, X_3, X_4, ...$, suppose that  $\mathbb{E} \abs{X_j} < \infty $ and that $\mathbb{E} X_j^2 < \infty$ and $\sigma_j^2 := \mathbb{V}(X_j) > 0 \ \forall j \in \mathbb{N}$, then:
+$$ Y_n := \frac{\sum_{j=1}^{n} X_j - \sum_{j=1}^{n} \mu_j}{\sqrt{\sum_{j=1}^{n} \sigma_j^2}} \xrightarrow[]{d} Z \sim N(0, 1) \ \text{as}\  n \xrightarrow[]{} \infty$$ assuming Lyapunov condition holds.
+
+\section*{Proof}
+We first standardize $X_j$'s by setting $\tilde{X_j} := X_j - \mu_j$. \\
+\\
+Then we have $B_n^2 := \mathbb{V}(S_n) = \sum_{j = 1}^{n} \mathbb{E} \tilde{X_j}^2$ \\
+\\
+Thus, we have: $$Y_n = \frac{\tilde{S_n}}{B_n} $$
+where $\tilde{S_n} = \sum_{j = 1}^{n} \tilde{X_j}$
+
+Let $\varphi_X(t) := \mathbb{E}(e^{itX})$ be the characteristic function for an arbitrary random variable X, then by the properties of ChF, we have:
+\begin{equation}
+    \varphi_{Y_n} {(t)} = \varphi_{\frac{\tilde{S_n}}{B_n}} {(t)} = \varphi_{\tilde{S_n}}{(t/B_n)} = \prod_{j = 1}^n \varphi_{\tilde{X_j}}{(t/B_n)}
+\end{equation}
+
+let $s:= \frac{t}{B_n}$, by Taylor expansion, we have that:
+\begin{equation}
+    \varphi_{\tilde{X_j}}{(s)} = \varphi_{\tilde{X_j}}{(0)} + \varphi'_{\tilde{X_j}}{(0)} s\  + \frac{1}{2}\varphi''_{\tilde{X_j}}{(0)} s^2\ +\frac{1}{6} \varphi'''_{\tilde{X_j}}{(0)} s^3\ + o(s^3)
+\end{equation}
+\clearpage
+By the properties of ChF
+\begin{equation}
+    \varphi_{\tilde{X_j}}{(0)} = 1
+\end{equation}
+\begin{equation}
+     \varphi'_{\tilde{X_j}}{(0)} = 0
+\end{equation}
+\begin{equation}
+     \varphi''_{\tilde{X_j}}{(0)} = -\mathbb{E} {\tilde{X_j}^2} = -\mathbb{V}{\tilde{X_j}^2} = \sigma_j^2
+\end{equation}
+\begin{equation}
+     \varphi'''_{\tilde{X_j}}{(0)} = i^3 \mathbb{E} \tilde{X_j}^3
+\end{equation}
+
+Combining the results from equations (3), (4), (5) and (6), we have:
+\begin{equation}
+    \varphi_{\tilde{X_j}}{(s)} = 1 - \frac{\sigma_j^2}{2} (s^2) + \frac{i^3 \mathbb{E}{\tilde{X_j}^3}}{6} (s^3) + o(s^3)
+\end{equation}
+
+Utilizing result from (7), we go ahead to show the convergence of ChF of $Y_n$:
+\begin{align*} 
+\varphi_{Y_n} (t) &= \prod_{j=1}^n \varphi_{\tilde{X_j}} (t / B_n) \\
+&= \prod_{j=1}^n \left(1 - \frac{\sigma_j^2}{2} (s^2) + \frac{i^3 \mathbb{E}{\tilde{X_j}^3}}{6} (s^3) + o(s^3) \right)  \ \ \ \  \ s := t / B_n\\
+&= \prod_{j=1}^n \left( 1 - \frac{\mathbb{E} \tilde{X_j}^2}{2} (s^2) + o(s^2) \right)\\
+&= \prod_{j=1}^n \exp{\left( \ln{\left(1 - \frac{\mathbb{E} \tilde{X_j}^2}{2} (s^2) + o(s^2)\right)} \right)}\\
+&= \prod_{j=1}^n \exp{\left(-\frac{\mathbb{E} \tilde{X_j}^2}{2} (s^2) + o(s^2) + a (o(1)) \right) } \ \ \ \  \ a := -\frac{\mathbb{E} \tilde{X_j}^2}{2} (s^2) + o(s^2)\\
+&= \exp{\left( -\sum_{j = 1}^n \frac{\mathbb{E} \tilde{X_j}^2}{2} (s^2) - \sum_{j=1}^{n} o(s^2) + a\sum_{j=1}^{n}(o(1)) \right) } \\
+&= \exp{\left( -\sum_{j = 1}^n \frac{\mathbb{E} \tilde{X_j}^2}{2 B_n^2} (t^2) - \sum_{j=1}^{n} o(s^2) + a\sum_{j=1}^{n}(o(1)) \right) } \\
+&= \exp{\left( - \frac{t^2\sum_{j = 1}^n\mathbb{E} \tilde{X_j}^2}{2\sum_{j = 1}^n\mathbb{E} \tilde{X_j}^2} - \sum_{j=1}^{n} o(s^2) + a\sum_{j=1}^{n}(o(1)) \right) } \\
+&= \exp{\left( - \frac{t^2}{2} - \sum_{j=1}^{n} o(s^2) + a\sum_{j=1}^{n}(o(1)) \right) } \\
+&\xrightarrow[]{} e^{-t^2 / 2}  \ \ \text{as}\  n \xrightarrow[]{} \infty
+\end{align*}
+
+This end result of the convergence is the ChF of standard normal distribution. It can be shown that convergence in ChF guarantees the convergence in distribution. \qedsymbol
+
+\end{document}
